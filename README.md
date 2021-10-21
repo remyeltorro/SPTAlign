@@ -5,7 +5,7 @@ A pipeline that combines SPT and Fourier shift to perform a sub-pixel registrati
   
 Original TFM stack             |  Drift corrected stack
 :-------------------------:|:-------------------------:
-![](_figures/drift.gif)  |  ![](_figures/drift_corrected.gif)
+![](_figures/drift.gif =250x)  |  ![](_figures/drift_corrected.gif =250x)
   
 </div>
 
