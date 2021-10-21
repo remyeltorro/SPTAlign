@@ -10,12 +10,20 @@ from natsort import natsorted
 from glob import glob
 import gc
 from PIL import Image
-
+import os
+import shutil
 
 directory = "../data/images/"
 trajectories = "../data/trajectories.csv"
 output_dir = "../output/"
-PxToUm = 0.1
+
+if os.path.isdir(output_dir):
+	shutil.rmtree(output_dir)
+os.mkdir(output_dir)
+os.mkdir(output_dir+"aligned/")
+
+
+PxToUm = float(input('What is the pixel calibration? '))
 
 def confinement_ratio(x,y):
 	s=0
@@ -155,7 +163,7 @@ plt.plot(np.array(fullrange),mean_displacement_y_at_t)
 plt.xlabel('frame')
 plt.ylabel(r'displacement [$\mu$m]')
 plt.savefig(output_dir+"displacement_profile.png",dpi=300)
-plt.pause(5)
+plt.pause(3)
 plt.close()
 	
 # END OF FIRST PASS #####
@@ -216,7 +224,7 @@ plt.plot(fullrange,mean_displacement_y_at_t)
 plt.xlabel('frame')
 plt.ylabel(r'displacement [$\mu$m]')
 plt.savefig(output_dir+"displacement_profile_corrected.png",dpi=300)
-plt.pause(5)
+plt.pause(3)
 plt.close()
 
 np.save(output_dir+"dispx_interp.npy",mean_displacement_x_at_t)
