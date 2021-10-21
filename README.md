@@ -33,6 +33,6 @@ python align.py
   
 Displacement field before interpolation             |  Interpolated displacement
 :-------------------------:|:-------------------------:
-![](output/displacement_profile.png)  |  ![](_figures/displacement_profile_corrected.png)
+![](output/displacement_profile.png)  |  ![](output/displacement_profile_corrected.png)
   
 </div>
