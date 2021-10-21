@@ -27,7 +27,7 @@ In order to install the required python packages:
 pip install -r requirements.txt
 ```
 
-## Acquisition of tracks
+## <img src="https://repository-images.githubusercontent.com/15321451/973eb080-f28d-11ea-851b-4eeac51e7e2e" alt="drawing" width="15"/> Acquisition of tracks
 
 The reference tracks are acquired using TrackMate, but any `.csv` table containing <img src="https://render.githubusercontent.com/render/math?math=x, \ y, \ t"> position and a track ID should work. TrackMate’s LoG detector applies a Laplacian of Gaussian filter, giving a strong response for gaussian-like spots of radius <img src="https://render.githubusercontent.com/render/math?math=\sqrt{2 \sigma}">, which must be tuned to the average size of the beads.  For each object, the detector applies a Gaussian fit, which allows for the determination of a subpixel centroid. Once the objects of interest are detected, TrackMate’s LAP particle linking algorithm, which combines a nearest  neighbour  penalty  function  with  similitude  criteria (intensity, shape, size...), is used to connect the detections throughout the frames. The maximum linking distance is increased until most of the long tracks are no longer truncated. If the focus is lost on some frames, we can introduce enough tracking gaps to "jump" over the blurry frames. In the end, most of the tracks should be as long as the movie itself. A filter on the track length can be used at the last step to get rid of most of the spurious tracks. A `.csv` file containing the required information can be exported as `trajectories.csv` and put in 📁`data/`. 
 
