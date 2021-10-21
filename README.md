@@ -28,3 +28,11 @@ python align.py
 ```
 
 ## Results
+
+<div align="center">
+  
+Displacement field before interpolation             |  Interpolated displacement
+:-------------------------:|:-------------------------:
+![](output/displacement_profile.png)  |  ![](_figures/displacement_profile_corrected.png)
+  
+</div>
