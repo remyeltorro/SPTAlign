@@ -1,4 +1,4 @@
-<img src="https://upload.wikimedia.org/wikipedia/fr/thumb/d/d4/Aix-Marseille_Universit%C3%A9_%28Logo%29.svg/1200px-Aix-Marseille_Universit%C3%A9_%28Logo%29.svg.png" alt="drawing" width="150"/><img src="https://centuri-livingsystems.org/wp-content/uploads/2018/02/logo-CENTURI-horizontal-azur-retina.png" width="150"/>
+<img src="https://www.univ-amu.fr/system/files/2021-01/DIRCOM-Logo_AMU_CMJN.png" alt="drawing" width="150"/><img src="https://centuri-livingsystems.org/wp-content/uploads/2018/02/logo-CENTURI-horizontal-azur-retina.png" width="150"/>
 
 
 # Sub-pixel image registration using single particle tracking
