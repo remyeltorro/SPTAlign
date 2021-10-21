@@ -164,7 +164,7 @@ for t in times:
 		framediff = np.sort(framediff)
 
 #Plot the displacement field before the interpolation pass
-plt.figure(figsize=(3,3))
+plt.figure(figsize=(4,3))
 plt.plot(np.array(fullrange),mean_displacement_x_at_t,label=r"$x$ displacement")
 plt.plot(np.array(fullrange),mean_displacement_y_at_t,label=r"$y$ displacement")
 plt.xlabel('frame')
@@ -228,7 +228,7 @@ for k in range(len(framediff)):
 	imwrite(output_dir+"aligned/out_"+padded_t+".tif",np.array(np.absolute(out),dtype='uint16'))
 		
 #Plot the displacement field after the interpolation
-plt.figure(figsize=(3,3))
+plt.figure(figsize=(4,3))
 plt.plot(fullrange,mean_displacement_x_at_t,label=r"$x$ displacement")
 plt.plot(fullrange,mean_displacement_y_at_t,label=r"$y$ displacement")
 plt.xlabel('frame')
