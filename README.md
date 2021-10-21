@@ -49,8 +49,8 @@ Set the pixel calibration and the script will perform the registration in two pa
 
 <div align="center">
   
-Displacement field before interpolation             |  Interpolated displacement
-:-------------------------:|:-------------------------:
-![](output/displacement_profile.png)  |  ![](output/displacement_profile_corrected.png)
+Displacement field before interpolation             |  Interpolated displacement | Re-tracking of aligned movie
+:-------------------------:|:-------------------------:|:---------------------------------------:|
+![](output/displacement_profile.png)  |  ![](output/displacement_profile_corrected.png) | ![](_figures/retracking.png)
   
 </div>
