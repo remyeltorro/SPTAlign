@@ -31,7 +31,7 @@ The reference tracks are acquired using TrackMate, but any CSV table containing 
 
 ## Alignment
 
-The sequence of frames to be aligned must be saved in the images/ folder (`File > Save As > Image Sequence...`) in TIFF format. Then one can movie in the `scripts/` folder and run:
+The sequence of frames to be aligned must be saved in the images/ folder (`File > Save As > Image Sequence...`) in TIFF format. Then move in the `scripts/` folder and run:
 
 ```bash
 python align.py calibration=pixel_calibration
