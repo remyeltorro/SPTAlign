@@ -25,7 +25,7 @@ pip install -r requirements.txt
 
 ## Acquisition of tracks
 
-
+The reference tracks are acquired using TrackMate, but any CSV table containing $X$, $Y$, $T$ position and a track ID should work. 
 
 ## Alignment
 
