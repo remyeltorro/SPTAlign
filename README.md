@@ -21,6 +21,8 @@ pip install -r requirements.txt
 
 ## Acquisition of tracks
 
+![](_figures/tracking.png)
+
 ## Alignment
 
 ```bash
