@@ -13,6 +13,7 @@ from PIL import Image
 import os
 import shutil
 
+# Folder tree following https://github.com/remyeltorro/subpixel_registration_spt 
 directory = "../data/images/"
 trajectories = "../data/trajectories.csv"
 output_dir = "../output/"
@@ -22,10 +23,14 @@ if os.path.isdir(output_dir):
 os.mkdir(output_dir)
 os.mkdir(output_dir+"aligned/")
 
-
+# set pixel calibration used during tracking
 PxToUm = float(input('What is the pixel calibration? '))
 
 def confinement_ratio(x,y):
+	"""
+	This function takes a series of positions x and y and computes the average displacement.
+	Function to be refined.
+	"""
 	s=0
 	for p in range(0,len(x)-1):
 		s+= np.sqrt((x[p+1]-x[p])**2+(y[p+1]-y[p])**2)
@@ -51,23 +56,24 @@ def check_consecutive(frames,dt=1):
 	return(np.array(slices),np.array(frames))
 
 
-img_paths = natsorted(glob(directory+"*.tif"))
-
-ref = imread(img_paths[0])
-data = pd.read_csv(trajectories)
+img_paths = natsorted(glob(directory+"*.tif")) #load images to align
+ref = imread(img_paths[0]) #set reference frame
+data = pd.read_csv(trajectories) #read trajectory file
 
 mean_displacement_x = []; mean_displacement_y = [];
 
-times = np.unique(data["FRAME"].to_numpy())
-fullrange = list(np.linspace(min(times),max(times),int(max(times)-min(times))+1))
-framediff = list(set(fullrange) - set(list(times)))
+times = np.unique(data["FRAME"].to_numpy()) #extract times for which tracks are available
+fullrange = list(np.linspace(min(times),max(times),int(max(times)-min(times))+1)) #all times
+framediff = list(set(fullrange) - set(list(times))) #missing frames
 
 # Find tracks existing in the reference frame
 exists_at_ref = data["FRAME"] == 0
 tracks_ref = data[exists_at_ref].TRACK_ID.unique()
 
+#initialize displacement fields to 0.0
 mean_displacement_x_at_t = np.zeros(len(fullrange)); mean_displacement_y_at_t = np.zeros(len(fullrange));
 
+#Compute the mean displacement of all tracks and filter out outliers
 tracklist = np.unique(data["TRACK_ID"].to_numpy())
 confinement_number = []
 for tid in tracklist:
@@ -77,24 +83,21 @@ for tid in tracklist:
     frames = data[trackid]["FRAME"].to_numpy()
     c = confinement_ratio(x,y)
     confinement_number.append(c)
- 
 c_threshold = np.percentile(confinement_number,90)
 print("Max accepted displacement = ",c_threshold)
+
+#Loop over all frames and align when tracking information is available
 for t in times:
 	gc.collect()
 	
 	ref = 0
 	print("Aligning frame ",t," out of ",max(times),"... ")
-	# Subtable of spots existing at time t
-	exists_at_t = data["FRAME"] == t
-	# Get tracks associated to those spots
-	tracks_t = data[exists_at_t].TRACK_ID.unique()
-	# Find intersection of tracks between ref and t
-	track_intersect = np.intersect1d(tracks_ref,tracks_t)
 
-
+	exists_at_t = data["FRAME"] == t # Subtable of spots existing at time t
+	tracks_t = data[exists_at_t].TRACK_ID.unique() # Get tracks associated to those spots
+	track_intersect = np.intersect1d(tracks_ref,tracks_t) # Find intersection of tracks between ref and t
 	
-	#Routine to align frames with no intersect to the last frame that was aligned
+	#Routine to align frames with no intersect to the last frame that was aligned, by chain rule
 	if len(track_intersect)<1:
 		s=1
 		while len(track_intersect)==0:
@@ -111,7 +114,7 @@ for t in times:
 		ref = int(t-s+1)
 		print("New reference time = ",ref)
 
-	# Use track match to compute a drift
+	# Use track matches to compute the drift
 	dx = []; dy = []; 
 	for tid in track_intersect:
 		track_at_t = data[(data["TRACK_ID"]==tid) & (data["FRAME"]==t)]
@@ -142,11 +145,13 @@ for t in times:
 		img_t = imread([s for s in img_paths if padded_t in s][0])
 		img_ref = imread([s for s in img_paths if padded_ref in s][0])
 		
+		#Fourier transform, apply shift, Fourier invert
 		to_align = np.copy(img_t)
 		input_ = np.fft.fft2(to_align)
 		out = fourier_shift(input_,shift=[-mean_dy/PxToUm,-mean_dx/PxToUm])
 		out = np.fft.ifft2(out)
 
+		# Export aligned frame
 		imwrite(output_dir+"aligned/out_"+padded_t+".tif",np.array(np.absolute(out),dtype='uint16'))
 	
 		del to_align
@@ -158,6 +163,7 @@ for t in times:
 		framediff = np.append(framediff,t)
 		framediff = np.sort(framediff)
 
+#Plot the displacement field before the interpolation pass
 plt.plot(np.array(fullrange),mean_displacement_x_at_t)
 plt.plot(np.array(fullrange),mean_displacement_y_at_t)
 plt.xlabel('frame')
@@ -218,7 +224,7 @@ for k in range(len(framediff)):
 
 	imwrite(output_dir+"aligned/out_"+padded_t+".tif",np.array(np.absolute(out),dtype='uint16'))
 		
-
+#Plot the displacement field after the interpolation
 plt.plot(fullrange,mean_displacement_x_at_t)
 plt.plot(fullrange,mean_displacement_y_at_t)
 plt.xlabel('frame')
