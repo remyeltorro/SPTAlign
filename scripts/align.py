@@ -12,9 +12,9 @@ import gc
 from PIL import Image
 
 
-directory = "images/"
-trajectories = "trajectories.csv"
-output_dir = "aligned/"
+directory = "../data/images/"
+trajectories = "../data/trajectories.csv"
+output_dir = "../output/"
 PxToUm = 0.1
 
 def confinement_ratio(x,y):
@@ -139,7 +139,7 @@ for t in times:
 		out = fourier_shift(input_,shift=[-mean_dy/PxToUm,-mean_dx/PxToUm])
 		out = np.fft.ifft2(out)
 
-		imwrite(output_dir+"out_"+padded_t+".tif",np.array(np.absolute(out),dtype='uint16'))
+		imwrite(output_dir+"aligned/out_"+padded_t+".tif",np.array(np.absolute(out),dtype='uint16'))
 	
 		del to_align
 		del input_
@@ -154,7 +154,7 @@ plt.plot(np.array(fullrange),mean_displacement_x_at_t)
 plt.plot(np.array(fullrange),mean_displacement_y_at_t)
 plt.xlabel('frame')
 plt.ylabel(r'displacement [$\mu$m]')
-plt.savefig("displacement_profile.png",dpi=300)
+plt.savefig(output_dir+"displacement_profile.png",dpi=300)
 plt.pause(5)
 plt.close()
 	
@@ -208,19 +208,19 @@ for k in range(len(framediff)):
 	out = fourier_shift(input_,shift=[-mean_dy/PxToUm,-mean_dx/PxToUm])
 	out = np.fft.ifft2(out)
 
-	imwrite(output_dir+"out_"+padded_t+".tif",np.array(np.absolute(out),dtype='uint16'))
+	imwrite(output_dir+"aligned/out_"+padded_t+".tif",np.array(np.absolute(out),dtype='uint16'))
 		
 
 plt.plot(fullrange,mean_displacement_x_at_t)
 plt.plot(fullrange,mean_displacement_y_at_t)
 plt.xlabel('frame')
 plt.ylabel(r'displacement [$\mu$m]')
-plt.savefig("displacement_profile_corrected.png",dpi=300)
+plt.savefig(output_dir+"displacement_profile_corrected.png",dpi=300)
 plt.pause(5)
 plt.close()
 
-np.save("dispx_interp.npy",mean_displacement_x_at_t)
-np.save("dispy_interp.npy",mean_displacement_y_at_t)
+np.save(output_dir+"dispx_interp.npy",mean_displacement_x_at_t)
+np.save(output_dir+"dispy_interp.npy",mean_displacement_y_at_t)
 
 	
 		
