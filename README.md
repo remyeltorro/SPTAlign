@@ -39,7 +39,7 @@ The sequence of frames to be aligned must be saved in the `data/images/` folder 
 python align.py
 ```
 
-Set the pixel calibration and the script will perform the registration in two passes, based on the `trajectories.csv` table stored in `data/`. 
+Set the pixel calibration and the script will perform the registration in two passes, based on the `trajectories.csv` table stored in `data/`. All frames are aligned with respect to the first frame of the movie. On the first pass, it will ignore the frames for which we don't have any reference track, on the second it will interpolate the displacement of those skipped frames.
 
 ## Results
 
