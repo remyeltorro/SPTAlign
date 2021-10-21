@@ -33,7 +33,7 @@ The reference tracks are acquired using TrackMate, but any `.csv` table containi
 
 ⚠ Make sure that 📁`data/images/` is empty before proceeding
 
-The sequence of frames to be aligned must be saved in 📁`data/images/` (`File > Save As > Image Sequence...`) in TIFF format. Then move in the 📁`scripts/` and run:
+The sequence of frames to be aligned must be saved in 📁`data/images/` (<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/FIJI_%28software%29_Logo.svg/1200px-FIJI_%28software%29_Logo.svg.png" alt="drawing" width="30"/> `File > Save As > Image Sequence...`) in TIFF format. Then move in the 📁`scripts/` and run:
 
 ```bash
 python align.py
@@ -50,5 +50,3 @@ Displacement field before interpolation             |  Interpolated displacement
 ![](output/displacement_profile.png)  |  ![](output/displacement_profile_corrected.png)
   
 </div>
-
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/FIJI_%28software%29_Logo.svg/1200px-FIJI_%28software%29_Logo.svg.png" alt="drawing" width="30"/>
