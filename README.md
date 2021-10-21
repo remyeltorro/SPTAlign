@@ -50,3 +50,7 @@ Displacement field before interpolation             |  Interpolated displacement
 ![](output/displacement_profile.png)  |  ![](output/displacement_profile_corrected.png)
   
 </div>
+
+
+![Alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/FIJI_%28software%29_Logo.svg/1200px-FIJI_%28software%29_Logo.svg.png)
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/FIJI_%28software%29_Logo.svg/1200px-FIJI_%28software%29_Logo.svg.png">
