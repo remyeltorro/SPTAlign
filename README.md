@@ -18,7 +18,7 @@ Original TFM stack             |  Drift corrected stack
 To clone the repository, go to the folder of your choice and run in a terminal:
 
 ```bash
-git clone https://github.com/remyeltorro/subpixel_registration_spt registration
+git clone https://github.com/remyeltorro/SPTAlign registration
 ```
 
 In order to install the required python packages:
