@@ -17,7 +17,7 @@ To clone the repository, go to the folder of your choice and run in a terminal:
 git clone https://github.com/remy13127/subpixel_registration_spt registration
 ```
 
-In order to install the required python packages, move into the newly created folder and run:
+In order to install the required python packages:
 
 ```bash
 pip install -r requirements.txt
