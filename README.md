@@ -11,17 +11,21 @@ Original TFM stack             |  Drift corrected stack
 
 ## Dependencies
 
-To install the required dependencies run:
+To clone the repository, go to the folder of your choice and run in a terminal:
+
+```bash
+git clone https://github.com/remy13127/subpixel_registration_spt registration
+```
+
+In order to install the required python packages, move into the newly created folder and run:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Cloning instructions
-
 ## Acquisition of tracks
 
-![](_figures/tracking.png)
+
 
 ## Alignment
 
