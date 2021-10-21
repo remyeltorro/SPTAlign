@@ -7,4 +7,3 @@ glob2==0.7
 pillow==8.2.0
 natsort==7.1.1
 gc-python-utils==0.0.1
-

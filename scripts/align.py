@@ -164,10 +164,13 @@ for t in times:
 		framediff = np.sort(framediff)
 
 #Plot the displacement field before the interpolation pass
-plt.plot(np.array(fullrange),mean_displacement_x_at_t)
-plt.plot(np.array(fullrange),mean_displacement_y_at_t)
+plt.figure(figsize=(3,3))
+plt.plot(np.array(fullrange),mean_displacement_x_at_t,label=r"$x$ displacement")
+plt.plot(np.array(fullrange),mean_displacement_y_at_t,label=r"$y$ displacement")
 plt.xlabel('frame')
 plt.ylabel(r'displacement [$\mu$m]')
+plt.legend()
+plt.tight_layout()
 plt.savefig(output_dir+"displacement_profile.png",dpi=300)
 plt.pause(3)
 plt.close()
@@ -225,10 +228,13 @@ for k in range(len(framediff)):
 	imwrite(output_dir+"aligned/out_"+padded_t+".tif",np.array(np.absolute(out),dtype='uint16'))
 		
 #Plot the displacement field after the interpolation
-plt.plot(fullrange,mean_displacement_x_at_t)
-plt.plot(fullrange,mean_displacement_y_at_t)
+plt.figure(figsize=(3,3))
+plt.plot(fullrange,mean_displacement_x_at_t,label=r"$x$ displacement")
+plt.plot(fullrange,mean_displacement_y_at_t,label=r"$y$ displacement")
 plt.xlabel('frame')
 plt.ylabel(r'displacement [$\mu$m]')
+plt.legend()
+plt.tight_layout()
 plt.savefig(output_dir+"displacement_profile_corrected.png",dpi=300)
 plt.pause(3)
 plt.close()
