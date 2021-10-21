@@ -25,7 +25,7 @@ pip install -r requirements.txt
 
 ## Acquisition of tracks
 
-The reference tracks are acquired using TrackMate, but any CSV table containing <img src="https://render.githubusercontent.com/render/math?math=x">, $Y$, $T$ position and a track ID should work. 
+The reference tracks are acquired using TrackMate, but any CSV table containing <img src="https://render.githubusercontent.com/render/math?math=x">, <img src="https://render.githubusercontent.com/render/math?math=y">, <img src="https://render.githubusercontent.com/render/math?math=t"> position and a track ID should work. 
 
 ## Alignment
 
