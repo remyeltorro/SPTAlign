@@ -31,6 +31,8 @@ The reference tracks are acquired using TrackMate, but any CSV table containing 
 
 ## Alignment
 
+The sequence of frames to be aligned must be saved in the images/ folder (Fiji > Save as... > Image Sequence) in TIF format. 
+
 ```bash
 python align.py
 ```
