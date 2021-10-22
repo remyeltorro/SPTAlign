@@ -55,6 +55,22 @@ def check_consecutive(frames,dt=1):
 			slices[i] = key
 	return(np.array(slices),np.array(frames))
 
+def fourier_shift_frame(frame,shift_x,shift_y,calibration):
+	#Fourier transform, apply shift, Fourier invert
+	to_align = np.copy(frame)
+	fft = np.fft.fft2(to_align)
+	fft_shift = fourier_shift(fft,shift=[-shift_y/calibration,-shift_x/calibration])
+	fftm1 = np.fft.ifft2(fft_shift)
+
+	# Export aligned frame
+	#imwrite(filename,np.array(np.absolute(fftm1),dtype='uint16'))
+
+	del to_align
+	del fft
+	del fft_shift
+	
+	return(np.array(np.absolute(fftm1),dtype='uint16'))
+	
 
 img_paths = natsorted(glob(directory+"*.tif")) #load images to align
 ref = imread(img_paths[0]) #set reference frame
@@ -139,26 +155,14 @@ for t in times:
 		mean_dx = np.mean(dx); mean_dy = np.mean(dy);
 		mean_displacement_x_at_t[int(t)] = mean_dx
 		mean_displacement_y_at_t[int(t)] = mean_dy	
-		
 		padded_t = str(t).zfill(4)
-		padded_ref = str(ref).zfill(4)
 		img_t = imread([s for s in img_paths if padded_t in s][0])
-		img_ref = imread([s for s in img_paths if padded_ref in s][0])
+		fftm1 = fourier_shift_frame(img_t,mean_dx,mean_dy,PxToUm)
+		imwrite(output_dir+"aligned/out_"+padded_t+".tif",fftm1,dtype='uint16')
 		
-		#Fourier transform, apply shift, Fourier invert
-		to_align = np.copy(img_t)
-		input_ = np.fft.fft2(to_align)
-		out = fourier_shift(input_,shift=[-mean_dy/PxToUm,-mean_dx/PxToUm])
-		out = np.fft.ifft2(out)
-
-		# Export aligned frame
-		imwrite(output_dir+"aligned/out_"+padded_t+".tif",np.array(np.absolute(out),dtype='uint16'))
-	
-		del to_align
-		del input_
-		del img_ref
 		del img_t
-		del out
+		del fftm1
+		
 	else:
 		framediff = np.append(framediff,t)
 		framediff = np.sort(framediff)
@@ -210,23 +214,13 @@ for k in range(len(unique_groups)):
 
 #Apply interpolated alignment to those frames
 for k in range(len(framediff)):
-	ref=0
 	target_frame = int(framediff[k])
 	mean_dx = disp_x[target_frame]; mean_dy = disp_y[target_frame];
-
 	padded_t = str(target_frame).zfill(4)
-	padded_ref = str(ref).zfill(4)
-
 	img_t = imread([s for s in img_paths if padded_t in s][0])
-	img_ref = imread([s for s in img_paths if padded_ref in s][0])
+	fftm1 = fourier_shift_frame(img_t,mean_dx,mean_dy,PxToUm)
+	imwrite(output_dir+"aligned/out_"+padded_t+".tif",fftm1,dtype='uint16')
 
-	to_align = np.copy(img_t)
-	input_ = np.fft.fft2(to_align)
-	out = fourier_shift(input_,shift=[-mean_dy/PxToUm,-mean_dx/PxToUm])
-	out = np.fft.ifft2(out)
-
-	imwrite(output_dir+"aligned/out_"+padded_t+".tif",np.array(np.absolute(out),dtype='uint16'))
-		
 #Plot the displacement field after the interpolation
 plt.figure(figsize=(4,3))
 plt.plot(fullrange,mean_displacement_x_at_t,label=r"$x$ displacement")
