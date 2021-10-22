@@ -13,7 +13,7 @@ from PIL import Image
 import os
 import shutil
 
-# Folder tree following https://github.com/remyeltorro/subpixel_registration_spt 
+# Following https://github.com/remyeltorro/subpixel_registration_spt 
 directory = "../data/images/"
 trajectories = "../data/trajectories.csv"
 output_dir = "../output/"
@@ -23,18 +23,22 @@ if os.path.isdir(output_dir):
 os.mkdir(output_dir)
 os.mkdir(output_dir+"aligned/")
 
+#colTID should be named "TRACK_ID" in the table
+colX = "POSITION_X"; colY = "POSITION_Y"; colTID = "TRACK_ID"; colF = "FRAME";
+
 # set pixel calibration used during tracking
 PxToUm = float(input('What is the pixel calibration? '))
 
-def confinement_ratio(x,y):
+def mean_displacement(x,y,times):
 	"""
 	This function takes a series of positions x and y and computes the average displacement.
 	Function to be refined.
 	"""
+	fullrange = list(np.linspace(min(times),max(times),int(max(times)-min(times))+1)) #to include gaps in average
 	s=0
 	for p in range(0,len(x)-1):
 		s+= np.sqrt((x[p+1]-x[p])**2+(y[p+1]-y[p])**2)
-	return(s/len(x))
+	return(s/len(fullrange))
 
 def check_consecutive(frames,dt=1):
 	"""
@@ -71,6 +75,18 @@ def fourier_shift_frame(frame,shift_x,shift_y,calibration):
 	
 	return(np.array(np.absolute(fftm1),dtype='uint16'))
 	
+def plot_displacement(frames,x_disp,y_disp,filename):
+	plt.figure(figsize=(4,3))
+	plt.plot(frames,x_disp,label=r"$x$ displacement")
+	plt.plot(frames,y_disp,label=r"$y$ displacement")
+	plt.xlabel('frame')
+	plt.ylabel(r'displacement [$\mu$m]')
+	plt.legend()
+	plt.tight_layout()
+	plt.savefig(filename,dpi=300)
+	plt.pause(3)
+	plt.close()
+
 
 img_paths = natsorted(glob(directory+"*.tif")) #load images to align
 ref = imread(img_paths[0]) #set reference frame
@@ -78,27 +94,28 @@ data = pd.read_csv(trajectories) #read trajectory file
 
 mean_displacement_x = []; mean_displacement_y = [];
 
-times = np.unique(data["FRAME"].to_numpy()) #extract times for which tracks are available
+times = np.unique(data[colF].to_numpy()) #extract times for which tracks are available
 fullrange = list(np.linspace(min(times),max(times),int(max(times)-min(times))+1)) #all times
 framediff = list(set(fullrange) - set(list(times))) #missing frames
 
 # Find tracks existing in the reference frame
-exists_at_ref = data["FRAME"] == 0
+exists_at_ref = data[colF] == 0
 tracks_ref = data[exists_at_ref].TRACK_ID.unique()
 
 #initialize displacement fields to 0.0
 mean_displacement_x_at_t = np.zeros(len(fullrange)); mean_displacement_y_at_t = np.zeros(len(fullrange));
 
 #Compute the mean displacement of all tracks and filter out outliers
-tracklist = np.unique(data["TRACK_ID"].to_numpy())
+tracklist = np.unique(data[colTID].to_numpy())
 confinement_number = []
 for tid in tracklist:
-    trackid = data["TRACK_ID"] == tid
-    x = data[trackid]["POSITION_X"].to_numpy()   #x associated to track 'tid'
-    y = data[trackid]["POSITION_Y"].to_numpy()   #y associated to track 'tid'
-    frames = data[trackid]["FRAME"].to_numpy()
-    c = confinement_ratio(x,y)
+    trackid = data[colTID] == tid
+    x = data[trackid][colX].to_numpy()   #x associated to track 'tid'
+    y = data[trackid][colY].to_numpy()   #y associated to track 'tid'
+    frames = data[trackid][colF].to_numpy()
+    c = mean_displacement(x,y,frames)
     confinement_number.append(c)
+
 c_threshold = np.percentile(confinement_number,90)
 print("Max accepted displacement = ",c_threshold)
 
@@ -109,7 +126,7 @@ for t in times:
 	ref = 0
 	print("Aligning frame ",t," out of ",max(times),"... ")
 
-	exists_at_t = data["FRAME"] == t # Subtable of spots existing at time t
+	exists_at_t = data[colF] == t # Subtable of spots existing at time t
 	tracks_t = data[exists_at_t].TRACK_ID.unique() # Get tracks associated to those spots
 	track_intersect = np.intersect1d(tracks_ref,tracks_t) # Find intersection of tracks between ref and t
 	
@@ -117,7 +134,7 @@ for t in times:
 	if len(track_intersect)<1:
 		s=1
 		while len(track_intersect)==0:
-			exists_at_new_ref = data["FRAME"] == int(t-s)
+			exists_at_new_ref = data[colF] == int(t-s)
 			tracks_new_ref = data[exists_at_new_ref].TRACK_ID.unique()
 			#print(tracks_new_ref,tracks_t)
 			track_intersect = np.intersect1d(tracks_new_ref,tracks_t)
@@ -133,20 +150,20 @@ for t in times:
 	# Use track matches to compute the drift
 	dx = []; dy = []; 
 	for tid in track_intersect:
-		track_at_t = data[(data["TRACK_ID"]==tid) & (data["FRAME"]==t)]
-		track_at_ref = data[(data["TRACK_ID"]==tid) & (data["FRAME"]==ref)]
+		track_at_t = data[(data[colTID]==tid) & (data[colF]==t)]
+		track_at_ref = data[(data[colTID]==tid) & (data[colF]==ref)]
 		c_value = confinement_number[int(np.where(tracklist==tid)[0])]
 
-		xt = track_at_t["POSITION_X"].to_numpy()[0]
-		yt = track_at_t["POSITION_Y"].to_numpy()[0]
+		xt = track_at_t[colX].to_numpy()[0]
+		yt = track_at_t[colY].to_numpy()[0]
 		if ref==0:
-			x0 = track_at_ref["POSITION_X"].to_numpy()[0]
-			y0 = track_at_ref["POSITION_Y"].to_numpy()[0]
+			x0 = track_at_ref[colX].to_numpy()[0]
+			y0 = track_at_ref[colY].to_numpy()[0]
 		else:
 			#print(ref)
 			#print(len(mean_displacement_x_at_t))
-			x0 = track_at_ref["POSITION_X"].to_numpy()[0] - mean_displacement_x_at_t[int(np.where(times==ref)[0])]
-			y0 = track_at_ref["POSITION_Y"].to_numpy()[0] - mean_displacement_y_at_t[int(np.where(times==ref)[0])]
+			x0 = track_at_ref[colX].to_numpy()[0] - mean_displacement_x_at_t[int(np.where(times==ref)[0])]
+			y0 = track_at_ref[colY].to_numpy()[0] - mean_displacement_y_at_t[int(np.where(times==ref)[0])]
 		if c_value<c_threshold:
 			dx.append(xt - x0)
 			dy.append(yt - y0)
@@ -168,16 +185,7 @@ for t in times:
 		framediff = np.sort(framediff)
 
 #Plot the displacement field before the interpolation pass
-plt.figure(figsize=(4,3))
-plt.plot(np.array(fullrange),mean_displacement_x_at_t,label=r"$x$ displacement")
-plt.plot(np.array(fullrange),mean_displacement_y_at_t,label=r"$y$ displacement")
-plt.xlabel('frame')
-plt.ylabel(r'displacement [$\mu$m]')
-plt.legend()
-plt.tight_layout()
-plt.savefig(output_dir+"displacement_profile.png",dpi=300)
-plt.pause(3)
-plt.close()
+plot_displacement(np.array(fullrange),mean_displacement_x_at_t,mean_displacement_y_at_t,output_dir+"displacement_profile.png")
 	
 # END OF FIRST PASS #####
 print("Interpolating the shift of the frames for which we have no information...")
@@ -222,16 +230,7 @@ for k in range(len(framediff)):
 	imwrite(output_dir+"aligned/out_"+padded_t+".tif",fftm1,dtype='uint16')
 
 #Plot the displacement field after the interpolation
-plt.figure(figsize=(4,3))
-plt.plot(fullrange,mean_displacement_x_at_t,label=r"$x$ displacement")
-plt.plot(fullrange,mean_displacement_y_at_t,label=r"$y$ displacement")
-plt.xlabel('frame')
-plt.ylabel(r'displacement [$\mu$m]')
-plt.legend()
-plt.tight_layout()
-plt.savefig(output_dir+"displacement_profile_corrected.png",dpi=300)
-plt.pause(3)
-plt.close()
+plot_displacement(np.array(fullrange),mean_displacement_x_at_t,mean_displacement_y_at_t,output_dir+"displacement_profile_corrected.png")
 
 np.save(output_dir+"dispx_interp.npy",mean_displacement_x_at_t)
 np.save(output_dir+"dispy_interp.npy",mean_displacement_y_at_t)
