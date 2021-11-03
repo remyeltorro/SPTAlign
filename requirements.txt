@@ -4,6 +4,6 @@ tifffile==2020.10.1
 scipy==1.4.1
 pandas==1.2.4
 glob2==0.7
-pillow==8.2.0
+pillow==8.4.0
 natsort==7.1.1
 gc-python-utils==0.0.1
