@@ -12,6 +12,8 @@ import gc
 from PIL import Image
 import os
 import shutil
+from numba import njit
+import time
 
 # Following https://github.com/remyeltorro/subpixel_registration_spt 
 directory = "../data/images/"
@@ -29,6 +31,7 @@ colX = "POSITION_X"; colY = "POSITION_Y"; colTID = "TRACK_ID"; colF = "FRAME";
 # set pixel calibration used during tracking
 PxToUm = float(input('What is the pixel calibration? '))
 
+@njit
 def mean_displacement(x,y,times):
 	"""
 	This function takes a series of positions x and y and computes the average displacement.
@@ -39,6 +42,7 @@ def mean_displacement(x,y,times):
 	for p in range(0,len(x)-1):
 		s+= np.sqrt((x[p+1]-x[p])**2+(y[p+1]-y[p])**2)
 	return(s/len(fullrange))
+
 
 def check_consecutive(frames,dt=1):
 	"""
@@ -58,6 +62,7 @@ def check_consecutive(frames,dt=1):
 		elif coef==1:
 			slices[i] = key
 	return(np.array(slices),np.array(frames))
+
 
 def fourier_shift_frame(frame,shift_x,shift_y,calibration):
 	#Fourier transform, apply shift, Fourier invert
@@ -117,14 +122,14 @@ for tid in tracklist:
     confinement_number.append(c)
 
 c_threshold = np.percentile(confinement_number,90)
-print("Max accepted displacement = ",c_threshold)
+print(f"Max accepted displacement = {c_threshold}")
 
 #Loop over all frames and align when tracking information is available
 for t in times:
 	gc.collect()
 	
 	ref = 0
-	print("Aligning frame ",t," out of ",max(times),"... ")
+	print(f"Aligning frame {t} out of {max(times)}... ")
 
 	exists_at_t = data[colF] == t # Subtable of spots existing at time t
 	tracks_t = data[exists_at_t].TRACK_ID.unique() # Get tracks associated to those spots
@@ -200,7 +205,7 @@ for k in range(len(unique_groups)):
 	disp_y = np.delete(mean_displacement_y_at_t, np.array(framediff,dtype=int))
 	lower_bound = np.amin(framediff[slices==unique_groups[k]]) #identify the bounds
 	upper_bound = np.amax(framediff[slices==unique_groups[k]])
-	print("Processing chunk ",k," lower bound = ",lower_bound,"; upper_bound = ",upper_bound,"...")
+	print(f"Processing chunk {k} lower bound = {lower_bound}; upper_bound = {upper_bound}...")
 	loclb = int(np.where(times==(lower_bound-1))[0]) #find the position of the nearest neighbors to the bounds in "times"
 	locub = int(np.where(times==(upper_bound+1))[0])
 	nbrpoints = 10 #define number of points taken on both sides for the interpolation
