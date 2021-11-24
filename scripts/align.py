@@ -180,7 +180,7 @@ for t in times:
 		padded_t = str(t).zfill(4)
 		img_t = imread([s for s in img_paths if padded_t in s][0])
 		fftm1 = fourier_shift_frame(img_t,mean_dx,mean_dy,PxToUm)
-		imwrite(output_dir+"aligned/out_"+padded_t+".tif",fftm1,dtype='uint16')
+		imwrite(f"{output_dir}aligned/out_{padded_t}.tif",fftm1,dtype='uint16')
 		
 		del img_t
 		del fftm1
@@ -232,7 +232,8 @@ for k in range(len(framediff)):
 	padded_t = str(target_frame).zfill(4)
 	img_t = imread([s for s in img_paths if padded_t in s][0])
 	fftm1 = fourier_shift_frame(img_t,mean_dx,mean_dy,PxToUm)
-	imwrite(output_dir+"aligned/out_"+padded_t+".tif",fftm1,dtype='uint16')
+	imwrite(f"{output_dir}aligned/out_{padded_t}.tif",fftm1,dtype='uint16')
+	
 
 #Plot the displacement field after the interpolation
 plot_displacement(np.array(fullrange),mean_displacement_x_at_t,mean_displacement_y_at_t,output_dir+"displacement_profile_corrected.png")
