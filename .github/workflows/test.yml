@@ -1,0 +1,70 @@
+name: unitary tests
+
+on:
+  push:
+
+jobs:
+  Linux:
+    name: Test Linux
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.9", "3.10", "3.11"]
+
+    environment:
+      name: tests
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Display Python version
+        run: python -c "import sys; print(sys.version)"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip cache purge
+          pip install setuptools wheel PyQt5
+      - name: Install package
+        run: |
+          pip install "."
+      - name: Test package
+        run: |
+          python -m unittest
+  Windows:
+    name: Test Windows
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest]
+        python-version: ["3.9", "3.10", "3.11"]
+
+    environment:
+      name: tests
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Display Python version
+        run: python -c "import sys; print(sys.version)"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip cache purge
+          pip install setuptools wheel PyQt5
+      - name: Install package
+        run: |
+          pip install "."
+      - name: Test package
+        run: |
+          python -m unittest
