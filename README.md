@@ -8,7 +8,7 @@
 
 `spt_align` is a Python package to correct subpixel shifts in traction force microscopy (TFM) images using a single-particle tracking of the fluorescent beads embedded in the TFM gels. This shifts are often of the order of magnitude of actual bead displacement, polluting considerably optical-flow-based studies, hence the need for a correction. Go check the [tutorial notebook](https://github.com/remyeltorro/SPTAlign/blob/main/notebook/Tutorial.ipynb) for more information!
 
--   [Report a bug or request a new feature](https://github.com/remyeltorro/celldetective/issues/new/choose)
+-   [Report a bug or request a new feature](https://github.com/remyeltorro/SPTAlign/issues/new/choose)
 
 ## System requirements
 
