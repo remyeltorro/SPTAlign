@@ -1,9 +1,7 @@
 <img src="https://www.univ-amu.fr/system/files/2021-01/DIRCOM-Logo_AMU_CMJN.png" alt="drawing" width="150"/> &nbsp;&nbsp; <img src="https://centuri-livingsystems.org/wp-content/uploads/2018/02/logo-CENTURI-horizontal-azur-retina.png" width="150"/>
 
 ![ico17](https://github.com/remyeltorro/SPTAlign/actions/workflows/test.yml/badge.svg)
-![ico6](https://img.shields.io/github/downloads/remyeltorro/SPTAlign/total)
 ![GitHub repo size](https://img.shields.io/github/repo-size/remyeltorro/SPTAlign)
-![GitHub License](https://img.shields.io/github/license/remyeltorro/SPTAlign?link=https%3A%2F%2Fgithub.com%2Fremyeltorro%2FSPTAlign%2Fblob%2Fmain%2FLICENSE)
 ![ico2](https://img.shields.io/github/forks/remyeltorro/SPTAlign?link=https%3A%2F%2Fgithub.com%2Fremyeltorro%2FSPTAlign%2Fforks)
 ![ico3](https://img.shields.io/github/stars/remyeltorro/SPTAlign?link=https%3A%2F%2Fgithub.com%2Fremyeltorro%2FSPTAlign%2Fstargazers)
 
@@ -59,6 +57,23 @@ The movie stack must be stored as an image sequence in `.tif` format in a folder
 	# registered stack created in folder "output/aligned"
 
 ```
+
+<div align="center">
+  
+Displacement field before interpolation             |  Interpolated displacement | Re-tracking of aligned movie
+:-------------------------:|:-------------------------:|:---------------------------------------:|
+![](output/displacement_profile.png)  |  ![](output/displacement_profile_corrected.png) | ![](_figures/retracking.png)
+  
+</div>
+
+
+<div align="center">
+  
+Original TFM stack             |  Drift corrected stack
+:-------------------------:|:-------------------------:
+![](_figures/drift.gif)  |  ![](_figures/drift_corrected.gif)
+  
+</div>
 
 
 ## How to cite?
