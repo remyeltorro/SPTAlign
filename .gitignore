@@ -1,4 +1,5 @@
 notebook/output/
+notebook/output_clean/
 *.egg-info/
 .ipynb_checkpoints
 */.ipynb_checkpoints/*

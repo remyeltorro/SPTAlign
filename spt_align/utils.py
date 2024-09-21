@@ -55,7 +55,7 @@ def plot_displacement(timeline, displacement, save_path=None, ax=None, auto_clos
 	ax.legend()
 	plt.tight_layout()
 	if save_path is not None:
-		plt.savefig(filename,dpi=300)
+		plt.savefig(save_path,dpi=300,bbox_inches='tight')
 	if not auto_close:
 		plt.show()
 	else:

@@ -59,11 +59,12 @@ The movie stack must be stored as an image sequence in `.tif` format in a folder
 ```
 
 <div align="center">
-  
-Displacement field before interpolation             |  Interpolated displacement | Re-tracking of aligned movie
-:-------------------------:|:-------------------------:|:---------------------------------------:|
-![](output/displacement_profile.png)  |  ![](output/displacement_profile_corrected.png) | ![](_figures/retracking.png)
-  
+
+|                                | Clean tracks | Corrupt tracks |
+|--------------------------------|--------------|----------------|
+| Displacement                   | ![](_figures/displacement_clean.png)             | ![](_figures/displacement_corrupt.png)               |
+| Displacement  after correction | ![](_figures/retracking_clean.png)            | ![](_figures/retracking_corrupt.png)               |
+
 </div>
 
 
