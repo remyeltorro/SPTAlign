@@ -10,7 +10,7 @@
 
 `spt_align` is a python package and register traction force microscopy (TFM) stacks using a tracking table of the fluorescent beads. Go check the tutorial notebook for more information!
 
--   🐛 [Report a bug or request a new feature](https://github.com/remyeltorro/celldetective/issues/new/choose)
+-   [Report a bug or request a new feature](https://github.com/remyeltorro/celldetective/issues/new/choose)
 
 
 ## System requirements
