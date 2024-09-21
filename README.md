@@ -28,13 +28,13 @@ To use the package, you must install Python, *e.g.* through
 You may clone the repository to your local machine (or download/extract the `zip` file), then install the python package `spt_align`. 
 
 ``` bash
-    # creates "SPTAlign" folder
-    git clone git://github.com/remyeltorro/SPTAlign.git
-    cd SPTAlign
+# creates "SPTAlign" folder
+git clone git://github.com/remyeltorro/SPTAlign.git
+cd SPTAlign
 
-    # install the package in editable/development mode
-    pip install -r requirements.txt
-    pip install -e .
+# install the package in editable/development mode
+pip install -r requirements.txt
+pip install -e .
 ```
 
 ## Quick use
@@ -45,17 +45,16 @@ The movie stack must be stored as an image sequence in `.tif` format in a folder
 
 
 ``` python
-	df = load_tracks("path/to/track/csv")
-	frames = locate_frames("path/to/frames/folder")
-	timeline = estimate_timeline(frames, df)
-	PxToUm = 1 # calibration used in TrackMate
-	output_dir = "output"
+df = load_tracks("path/to/track/csv")
+frames = locate_frames("path/to/frames/folder")
+timeline = estimate_timeline(frames, df)
+PxToUm = 1 # calibration used in TrackMate
+output_dir = "output"
 
-	displacement = estimate_displacement(df, timeline, reference_time=0, nbr_tracks_threshold=30)
-	displacement = fill_by_shifting_reference_time(df, timeline, displacement, nbr_tracks_threshold=30, from_origin=True)
-	align_frames(frames, displacement, PxToUm=PxToUm, output_dir=output_dir,return_stack=False)
-	# registered stack created in folder "output/aligned"
-
+displacement = estimate_displacement(df, timeline, reference_time=0, nbr_tracks_threshold=30)
+displacement = fill_by_shifting_reference_time(df, timeline, displacement, nbr_tracks_threshold=30, from_origin=True)
+align_frames(frames, displacement, PxToUm=PxToUm, output_dir=output_dir,return_stack=False)
+# registered stack created in folder "output/aligned"
 ```
 
 <div align="center">
