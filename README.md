@@ -98,4 +98,4 @@ If you use the notebook in your research, please cite the work for which it was 
 
 ## Bibliography
 
-[^1]: Ershov, Dmitry, Minh-Son Phan, Joanna W. Pylvänäinen, Stéphane U. Rigaud, Laure Le Blanc, Arthur Charles-Orszag, James R. W. Conway, et al. “TrackMate 7: Integrating State-of-the-Art Segmentation Algorithms into Tracking Pipelines.” Nature Methods 19, no. 7 (July 2022): 829–32. https://doi.org/10.1038/s41592-022-01507-1.
+[^1]: Ershov, Dmitry, Minh-Son Phan, Joanna W. Pylvänäinen, Stéphane U. Rigaud, Laure Le Blanc, Arthur Charles-Orszag, James R. W. Conway, et al. "TrackMate 7: Integrating State-of-the-Art Segmentation Algorithms into Tracking Pipelines."" Nature Methods 19, no. 7 (July 2022): 829–32. https://doi.org/10.1038/s41592-022-01507-1.
