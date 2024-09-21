@@ -1,26 +1,33 @@
 <img src="https://www.univ-amu.fr/system/files/2021-01/DIRCOM-Logo_AMU_CMJN.png" alt="drawing" width="150"/> &nbsp;&nbsp; <img src="https://centuri-livingsystems.org/wp-content/uploads/2018/02/logo-CENTURI-horizontal-azur-retina.png" width="150"/>
 
+![ico17](https://github.com/remyeltorro/SPTAlign/actions/workflows/test.yml/badge.svg)
+![ico6](https://img.shields.io/github/downloads/remyeltorro/SPTAlign/total)
+![GitHub repo size](https://img.shields.io/github/repo-size/remyeltorro/SPTAlign)
+![GitHub License](https://img.shields.io/github/license/remyeltorro/SPTAlign?link=https%3A%2F%2Fgithub.com%2Fremyeltorro%2FSPTAlign%2Fblob%2Fmain%2FLICENSE)
+![ico2](https://img.shields.io/github/forks/remyeltorro/SPTAlign?link=https%3A%2F%2Fgithub.com%2Fremyeltorro%2FSPTAlign%2Fforks)
+![ico3](https://img.shields.io/github/stars/remyeltorro/SPTAlign?link=https%3A%2F%2Fgithub.com%2Fremyeltorro%2FSPTAlign%2Fstargazers)
 
-# Badges 
 
-# Brief description and links?
+`spt_align` is a python package and register traction force microscopy (TFM) stacks using a tracking table of the fluorescent beads. Go check the tutorial notebook for more information!
 
-# Overview
+-   🐛 [Report a bug or request a new feature](https://github.com/remyeltorro/celldetective/issues/new/choose)
 
 
 # System requirements
 
 ## Hardware requirements
 
-Tested on Ubuntu and Windows.
+The registration is done frame per frame, with a garbage collect at each loop to save memory. Therefore, the requirements are very low.
 
 ## Software requirements
 
-This package was developed in Python 3.9.
+To use the package, you must install Python, *e.g.* through
+[Anaconda](https://www.anaconda.com/download). The `spt_align` package is routinely tested on both Ubuntu and Windows for Python versions between 3.7 and 3.12.
+
 
 # Package installation
 
-You may clone the repository to your local machine (or download/extract the `zip` file), then install the python package `spt_align`:
+You may clone the repository to your local machine (or download/extract the `zip` file), then install the python package `spt_align`. 
 
 ``` bash
     # creates "SPTAlign" folder
@@ -36,7 +43,8 @@ You may clone the repository to your local machine (or download/extract the `zip
 
 Open a Python shell or a Jupyter Notebook. For detailed a detailed explanation about the steps of the method, check the tutorial notebook provided in the `notebook` folder of the repository. 
 
-The movie stack must be stored as an image sequence in `.tif` format in a folder.
+The movie stack must be stored as an image sequence in `.tif` format in a folder. Here the tracking is assumed to have been performed with TrackMate[^1].
+
 
 ``` python
 	df = load_tracks("path/to/track/csv")
@@ -47,7 +55,9 @@ The movie stack must be stored as an image sequence in `.tif` format in a folder
 
 	displacement = estimate_displacement(df, timeline, reference_time=0, nbr_tracks_threshold=30)
 	displacement = fill_by_shifting_reference_time(df, timeline, displacement, nbr_tracks_threshold=30, from_origin=True)
-	stack = align_frames(frames, displacement, PxToUm=PxToUm, output_dir=output_dir,return_stack=True)
+	align_frames(frames, displacement, PxToUm=PxToUm, output_dir=output_dir,return_stack=False)
+	# registered stack created in folder "output/aligned"
+
 ```
 
 
@@ -69,3 +79,7 @@ If you use the notebook in your research, please cite the work for which it was 
 	journal = {bioRxiv}
 }
 ```
+
+# Bibliography
+
+[^1]: Ershov, Dmitry, Minh-Son Phan, Joanna W. Pylvänäinen, Stéphane U. Rigaud, Laure Le Blanc, Arthur Charles-Orszag, James R. W. Conway, et al. “TrackMate 7: Integrating State-of-the-Art Segmentation Algorithms into Tracking Pipelines.” Nature Methods 19, no. 7 (July 2022): 829–32. https://doi.org/10.1038/s41592-022-01507-1.
