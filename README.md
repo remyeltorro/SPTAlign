@@ -39,7 +39,7 @@ pip install -e .
 
 ## Quick use
 
-Open a Python shell or a Jupyter Notebook. For detailed a detailed explanation about the steps of the method, check the tutorial notebook provided in the `notebook` folder of the repository. 
+Open a Python shell or a Jupyter Notebook. For detailed a detailed explanation about the steps of the method, check the [tutorial notebook](https://github.com/remyeltorro/SPTAlign/blob/main/notebook/Tutorial.ipynb)! 
 
 The movie stack must be stored as an image sequence in `.tif` format in a folder. Here the tracking is assumed to have been performed with TrackMate[^1].
 
