@@ -1,56 +1,71 @@
 <img src="https://www.univ-amu.fr/system/files/2021-01/DIRCOM-Logo_AMU_CMJN.png" alt="drawing" width="150"/> &nbsp;&nbsp; <img src="https://centuri-livingsystems.org/wp-content/uploads/2018/02/logo-CENTURI-horizontal-azur-retina.png" width="150"/>
 
 
-# Sub-pixel image registration using single particle tracking
+# Badges 
 
-Registration  of  microscopy  images  is  often  crucial to measure biophysical quantities such as forces and displacements, that can be barely perceptible. Saccades and drifts are unavoidable when acquiring an image sequence on most microscopes.  To correct for the drift, feature based approaches, such as SIFT, usually perform well under most conditions but computation time can become a problem for long movies.  We propose an approach that mimics the behavior of the eye when looking at a movie in need of  alignment. At  high  frame  rates,  the  eye  can  easily pinpoint objects being translated at a low pace, with a high degree of correlation.  We will call these objects the reference  objects,  which  can  be  defects  on  a  substrate or  fluorescent  molecules  that  are  assumed  to  be  static with respect to the substrate.  The displacement field of those objects can be extracted from their tracks, easily acquired with the tracker TrackMate.  The corrective image shift is then applied in Fourier space to the original frames.
+# Brief description and links?
 
-<div align="center">
-  
-Original TFM stack             |  Drift corrected stack
-:-------------------------:|:-------------------------:
-![](_figures/drift.gif)  |  ![](_figures/drift_corrected.gif)
-  
-</div>
+# Overview
 
-## Dependencies
 
-To clone the repository, go to the folder of your choice and run in a terminal:
+# System requirements
 
-```bash
-git clone https://github.com/remyeltorro/SPTAlign registration
+## Hardware requirements
+
+Tested on Ubuntu and Windows.
+
+## Software requirements
+
+This package was developed in Python 3.9.
+
+# Package installation
+
+You may clone the repository to your local machine (or download/extract the `zip` file), then install the python package `spt_align`:
+
+``` bash
+    # creates "SPTAlign" folder
+    git clone git://github.com/remyeltorro/SPTAlign.git
+    cd SPTAlign
+
+    # install the package in editable/development mode
+    pip install -r requirements.txt
+    pip install -e .
 ```
 
-In order to install the required python packages:
+# Quick use
 
-```bash
-pip install -r requirements.txt
+Open a Python shell or a Jupyter Notebook. For detailed a detailed explanation about the steps of the method, check the tutorial notebook provided in the `notebook` folder of the repository. 
+
+The movie stack must be stored as an image sequence in `.tif` format in a folder.
+
+``` python
+	df = load_tracks("path/to/track/csv")
+	frames = locate_frames("path/to/frames/folder")
+	timeline = estimate_timeline(frames, df)
+	PxToUm = 1 # calibration used in TrackMate
+	output_dir = "output"
+
+	displacement = estimate_displacement(df, timeline, reference_time=0, nbr_tracks_threshold=30)
+	displacement = fill_by_shifting_reference_time(df, timeline, displacement, nbr_tracks_threshold=30, from_origin=True)
+	stack = align_frames(frames, displacement, PxToUm=PxToUm, output_dir=output_dir,return_stack=True)
 ```
 
-## Acquisition of tracks <img src="https://repository-images.githubusercontent.com/15321451/973eb080-f28d-11ea-851b-4eeac51e7e2e" alt="drawing" width="50"/>
 
-The reference tracks are acquired using TrackMate, but any `.csv` table containing <img src="https://render.githubusercontent.com/render/math?math=x, \ y, \ t"> position and a track ID should work (columns `TRACK_ID`, `POSITION_X`, `POSITION_Y`, `FRAME`). TrackMate’s LoG detector applies a Laplacian of Gaussian filter, giving a strong response for gaussian-like spots of radius <img src="https://render.githubusercontent.com/render/math?math=\sqrt{2 \sigma}">, which must be tuned to the average size of the beads.  For each object, the detector applies a Gaussian fit, which allows for the determination of a subpixel centroid. Once the objects of interest are detected, TrackMate’s LAP particle linking algorithm, which combines a nearest  neighbour  penalty  function  with  similitude  criteria (intensity, shape, size...), is used to connect the detections throughout the frames. The maximum linking distance is increased until most of the long tracks are no longer truncated. If the focus is lost on some frames, we can introduce enough tracking gaps to "jump" over the blurry frames. In the end, most of the tracks should be as long as the movie itself. A filter on the track length can be used at the last step to get rid of most of the spurious tracks. A `.csv` file containing the required information can be exported as `trajectories.csv` and put in 📁`data/`. 
+# How to cite?
 
-⚠ On the latest TrackMate version, two additional line of alternate column labels are added at the beginning of the `.csv` table, please erase them before proceeding with the alignment.
+If you use the notebook in your research, please cite the work for which it was developed (currently preprint):
 
-## Alignment
-
-⚠ Make sure that 📁`data/images/` is empty before proceeding
-
-The sequence of frames to be aligned must be saved in 📁`data/images/` (<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/FIJI_%28software%29_Logo.svg/1200px-FIJI_%28software%29_Logo.svg.png" alt="drawing" width="15"/> `File > Save As > Image Sequence...`) in TIFF format. Then move in the 📁`scripts/` and run:
-
-```bash
-python align.py
+``` raw
+@article {Mustapha2022.02.11.480084,
+	author = {Mustapha, Farah and Pelicot-Biarnes, Martine and Torro, Remy and Sengupta, Kheya and Puech, Pierre-henri},
+	title = {Cellular forces during early spreading of T lymphocytes on ultra-soft substrates},
+	elocation-id = {2022.02.11.480084},
+	year = {2022},
+	doi = {10.1101/2022.02.11.480084},
+	publisher = {Cold Spring Harbor Laboratory},
+	abstract = {T cells use forces to read out and act on the mechanical parameters of their microenvironment, which includes antigen presenting cells (APCs). Here we explore the early interaction of T cells with an APC-mimicking ultra-soft polymer gel exhibiting physiologically relevant stiffness in the range of 350-450 Pa. We quantify the dependence of cell spreading and stiffness on gel elasticity, and measure early time traction forces. We find that coating the surface with an antibody against the CD3 region of the TCR-complex elicits small but measurable gel deformation in the early recognition phase, which we quantify in terms of stress or energy. We show that the time evolution of the energy follows one of three distinct patterns: active fluctuation, intermittent, or sigmoidal signal. Addition of either anti-CD28 or anti-LFA1 has little impact on the total integrated energy or the maximum stress. However, the relative distribution of the energy patterns does depend on the additional ligands. Remarkably, the forces are centrifugal at very early times, and only later turn into classical in-ward pointing centripetal traction.},
+	URL = {https://www.biorxiv.org/content/early/2022/02/11/2022.02.11.480084},
+	eprint = {https://www.biorxiv.org/content/early/2022/02/11/2022.02.11.480084.full.pdf},
+	journal = {bioRxiv}
+}
 ```
-
-Set the pixel calibration and the script will perform the registration in two passes, based on the `trajectories.csv` table stored in 📁`data/`. All frames are aligned with respect to the first frame of the movie. On the first pass, it will ignore the frames for which we don't have any reference track, on the second it will interpolate the displacement of those skipped frames.
-
-## Results
-
-<div align="center">
-  
-Displacement field before interpolation             |  Interpolated displacement | Re-tracking of aligned movie
-:-------------------------:|:-------------------------:|:---------------------------------------:|
-![](output/displacement_profile.png)  |  ![](output/displacement_profile_corrected.png) | ![](_figures/retracking.png)
-  
-</div>

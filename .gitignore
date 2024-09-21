@@ -1,0 +1,5 @@
+notebook/output/
+*.egg-info/
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+notebook/.ipynb_checkpoints/*
