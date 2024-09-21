@@ -13,19 +13,19 @@
 -   🐛 [Report a bug or request a new feature](https://github.com/remyeltorro/celldetective/issues/new/choose)
 
 
-# System requirements
+## System requirements
 
-## Hardware requirements
+### Hardware requirements
 
 The registration is done frame per frame, with a garbage collect at each loop to save memory. Therefore, the requirements are very low.
 
-## Software requirements
+### Software requirements
 
 To use the package, you must install Python, *e.g.* through
 [Anaconda](https://www.anaconda.com/download). The `spt_align` package is routinely tested on both Ubuntu and Windows for Python versions between 3.7 and 3.12.
 
 
-# Package installation
+## Package installation
 
 You may clone the repository to your local machine (or download/extract the `zip` file), then install the python package `spt_align`. 
 
@@ -39,7 +39,7 @@ You may clone the repository to your local machine (or download/extract the `zip
     pip install -e .
 ```
 
-# Quick use
+## Quick use
 
 Open a Python shell or a Jupyter Notebook. For detailed a detailed explanation about the steps of the method, check the tutorial notebook provided in the `notebook` folder of the repository. 
 
@@ -61,7 +61,7 @@ The movie stack must be stored as an image sequence in `.tif` format in a folder
 ```
 
 
-# How to cite?
+## How to cite?
 
 If you use the notebook in your research, please cite the work for which it was developed (currently preprint):
 
@@ -80,6 +80,6 @@ If you use the notebook in your research, please cite the work for which it was 
 }
 ```
 
-# Bibliography
+## Bibliography
 
 [^1]: Ershov, Dmitry, Minh-Son Phan, Joanna W. Pylvänäinen, Stéphane U. Rigaud, Laure Le Blanc, Arthur Charles-Orszag, James R. W. Conway, et al. “TrackMate 7: Integrating State-of-the-Art Segmentation Algorithms into Tracking Pipelines.” Nature Methods 19, no. 7 (July 2022): 829–32. https://doi.org/10.1038/s41592-022-01507-1.
