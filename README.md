@@ -6,10 +6,9 @@
 ![ico3](https://img.shields.io/github/stars/remyeltorro/SPTAlign?link=https%3A%2F%2Fgithub.com%2Fremyeltorro%2FSPTAlign%2Fstargazers)
 
 
-`spt_align` is a python package and register traction force microscopy (TFM) stacks using a tracking table of the fluorescent beads. Go check the tutorial notebook for more information!
+`spt_align` is a Python package to correct subpixel shifts in traction force microscopy (TFM) images using a single-particle tracking of the fluorescent beads embedded in the TFM gels. Go check the [tutorial notebook](https://github.com/remyeltorro/SPTAlign/blob/main/notebook/Tutorial.ipynb) for more information!
 
 -   [Report a bug or request a new feature](https://github.com/remyeltorro/celldetective/issues/new/choose)
-
 
 ## System requirements
 
