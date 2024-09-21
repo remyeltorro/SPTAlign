@@ -63,7 +63,7 @@ The movie stack must be stored as an image sequence in `.tif` format in a folder
 |                                | Clean tracks | Corrupt tracks |
 |--------------------------------|--------------|----------------|
 | Displacement                   | ![](_figures/displacement_clean.png)             | ![](_figures/displacement_corrupt.png)               |
-| Displacement  after correction | ![](_figures/retracking_clean.png)            | ![](_figures/retracking_corrupt.png)               |
+| Displacement  after correction | ![](_figures/retracking-clean.png)            | ![](_figures/retracking-corrupt.png)               |
 
 </div>
 
