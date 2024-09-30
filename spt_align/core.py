@@ -143,15 +143,30 @@ def estimate_displacement(df, timeline, reference_time=0, nbr_tracks_threshold=3
 				positions = group.loc[group['TRACK_ID'].isin(track_intersection),['POSITION_X','POSITION_Y']].to_numpy()
 
 				shift = positions - reference_positions
+				
+				# Outlier detection
+				q75 = np.percentile(shift,75,axis=0,method="inverted_cdf")
+				q25 = np.percentile(shift,25,axis=0,method="inverted_cdf")
+				iqr = q75 - q25
 
-				mu_x, std_x = norm.fit(shift[:,0])
-				mu_y, std_y = norm.fit(shift[:,1])
+				whi_upper = q75 + 1.5*iqr
+				whi_lower = q25 - 1.5*iqr
+				
+				safe_x = shift[:,0]
+				safe_x = safe_x[(safe_x>=whi_lower[0])*(safe_x<=whi_upper[0])]
 
-				displacement[time,:] = [mu_x, mu_y]
+				safe_y = shift[:,1]
+				safe_y = safe_y[(safe_y>=whi_lower[1])*(safe_y<=whi_upper[1])]
+
+				if len(safe_x)>0 and len(safe_y)>0:
+
+					mu_x, std_x = norm.fit(safe_x)
+					mu_y, std_y = norm.fit(safe_y)
+					displacement[time,:] = [mu_x, mu_y]
 	
 	return displacement
 
-def fill_by_shifting_reference_time(df, timeline, displacement, nbr_tracks_threshold=30, initial_reference_time=0, from_origin=True, extrapolation_kind='linear'):
+def fill_by_shifting_reference_time(df, timeline, displacement, nbr_tracks_threshold=30, initial_reference_time=0, from_origin=True, extrapolation_kind='linear', interpolate=False):
 	
 	"""
 	Fill missing displacement values in a displacement array by dynamically adjusting the reference time.
@@ -271,6 +286,20 @@ def fill_by_shifting_reference_time(df, timeline, displacement, nbr_tracks_thres
 				dy += displacement[s,1]
 				displacement[t,:] = tuple([dx,dy])
 				print(f"Time {t}: Displacement_x(t={s}) = {displacement[s,0]}\nTotal displacement_x = {displacement[t,0]}")
+
+	if interpolate:		
+		disp_x = displacement[:,0]
+		nan_x = [i for i in range(len(timeline)) if disp_x[i]!=disp_x[i]]
+		fx = interp1d(timeline[disp_x==disp_x], disp_x[disp_x==disp_x], kind="linear", fill_value='extrapolate')
+		
+		disp_y = displacement[:,1]
+		nan_y = [i for i in range(len(timeline)) if disp_y[i]!=disp_y[i]]		
+		fy = interp1d(timeline[disp_y==disp_y], disp_y[disp_y==disp_y], kind="linear", fill_value='extrapolate')
+		
+		for t in nan_x:
+			displacement[t,0] = fx(timeline[t])
+		for t in nan_y:
+			displacement[t,1] = fy(timeline[t])
 
 	return displacement.copy()
 
