@@ -145,8 +145,8 @@ def estimate_displacement(df, timeline, reference_time=0, nbr_tracks_threshold=3
 				shift = positions - reference_positions
 				
 				# Outlier detection
-				q75 = np.percentile(shift,75,axis=0,method="inverted_cdf")
-				q25 = np.percentile(shift,25,axis=0,method="inverted_cdf")
+				q75 = np.percentile(shift,75,axis=0)
+				q25 = np.percentile(shift,25,axis=0)
 				iqr = q75 - q25
 
 				whi_upper = q75 + 1.5*iqr
