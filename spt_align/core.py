@@ -13,6 +13,31 @@ import shutil
 import time
 import gc
 from tqdm import tqdm
+from scipy.interpolate import griddata
+import tifffile.tifffile as tiff
+
+
+def interpolate_nan(img, method='nearest'):
+
+	"""
+	Interpolate NaN on single channel array 2D
+	"""
+
+	if np.all(img==0):
+		return img
+
+	if np.any(img.flatten()!=img.flatten()):
+		# then need to interpolate
+		x_grid, y_grid = np.meshgrid(np.arange(img.shape[1]),np.arange(img.shape[0]))
+		mask = [~np.isnan(img)][0]
+		x = x_grid[mask].reshape(-1)
+		y = y_grid[mask].reshape(-1)
+		points = np.array([x,y]).T
+		values = img[mask].reshape(-1)
+		interp_grid = griddata(points, values, (x_grid, y_grid), method=method)
+		return interp_grid
+	else:
+		return img
 
 def fourier_shift_frame(frame, shift_x, shift_y, PxToUm=1):
 
@@ -50,12 +75,12 @@ def fourier_shift_frame(frame, shift_x, shift_y, PxToUm=1):
 	"""
 
 	#Fourier transform, apply shift, Fourier invert
-	to_align = np.copy(frame)
+	to_align = np.copy(frame).astype(float)
 	fft = np.fft.fft2(to_align)
-	fft_shift = fourier_shift(fft,shift=[-shift_y/PxToUm,-shift_x/PxToUm])
+	fft_shift = fourier_shift(fft,shift=[-shift_y/float(PxToUm),-shift_x/float(PxToUm)])
 	fftm1 = np.fft.ifft2(fft_shift)
 	
-	return np.array(np.absolute(fftm1),dtype='uint16')
+	return np.array(np.absolute(fftm1),dtype=float)
 
 
 def estimate_displacement(df, timeline, reference_time=0, nbr_tracks_threshold=30):
@@ -304,7 +329,7 @@ def fill_by_shifting_reference_time(df, timeline, displacement, nbr_tracks_thres
 	return displacement.copy()
 
 
-def align_frames(frames, displacement, PxToUm=1, output_dir=None, return_stack=True):
+def align_frames(frames, displacement, PxToUm=1, output_dir=None, return_stack=True, export_frame_by_frame=True):
 	
 	"""
 	Aligns a sequence of image frames based on provided displacement values using Fourier shift.
@@ -370,23 +395,61 @@ def align_frames(frames, displacement, PxToUm=1, output_dir=None, return_stack=T
 		os.mkdir(output_dir)
 	
 	aligned_stack = []
-	for t in range(len(frames)):
-		padded_t = str(int(t)).zfill(4)
-		dx,dy = displacement[t]
-		frame = imread(frames[t])
-		if dx==dx:
-			fftm1 = fourier_shift_frame(frame.astype(float), dx, dy, PxToUm=PxToUm)
-		else:
-			fftm1 = np.zeros_like(frame)
+
+	if export_frame_by_frame:
 		
-		if output_dir is not None:
-			imwrite(os.sep.join([output_dir,f"out_{padded_t}.tif"]),fftm1,dtype='uint16')
-		
-		if return_stack:
-			aligned_stack.append(fftm1)
-		else:
-			del frame
-			del fftm1
-			gc.collect()	
+		for t in range(len(frames)):
+
+			padded_t = str(int(t)).zfill(4)
+			dx,dy = displacement[t]
+			
+			frame = imread(frames[t]).astype(float)
+			frame = interpolate_nan(frame)
+
+			if dx==dx:
+				fftm1 = fourier_shift_frame(frame, dx, dy, PxToUm=PxToUm)
+			else:
+				fftm1 = np.zeros_like(frame)
+			
+			if output_dir is not None:
+				imwrite(os.sep.join([output_dir,f"out_{padded_t}.tif"]),fftm1.astype('float'),dtype='float')
+	
+			if return_stack:
+				aligned_stack.append(fftm1)
+			else:
+				del frame
+				del fftm1
+				gc.collect()
+
+	else:
+		# the tiff frame by frame writing method
+		path = output_dir
+		newfile = "aligned.tif"
+		with tiff.TiffWriter(os.sep.join([path,newfile]),bigtiff=True,imagej=True) as tif:
+			
+			for t in range(len(frames)):
+
+				padded_t = str(int(t)).zfill(4)
+				dx,dy = displacement[t]
+				
+				frame = imread(frames[t]).astype(float)
+				frame = interpolate_nan(frame)
+
+				if dx==dx:
+					fftm1 = fourier_shift_frame(frame, dx, dy, PxToUm=PxToUm)
+				else:
+					fftm1 = np.zeros_like(frame)
+				
+				if output_dir is not None:
+
+					tif.write(fftm1.astype(np.dtype('f')), contiguous=True)
+				
+				if return_stack:
+					aligned_stack.append(fftm1)
+				else:
+					del frame
+					del fftm1
+					gc.collect()
+
 	if return_stack:
 		return np.array(aligned_stack)

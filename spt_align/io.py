@@ -108,7 +108,50 @@ def is_float(element: any) -> bool:
 	except ValueError:
 		return False
 
-def load_tracks(csv, column_labels={'track': "TRACK_ID", 'time': 'FRAME', 'x': 'POSITION_X', 'y': 'POSITION_Y'}):
+
+def filter_by_tracklength(trajectories, minimum_tracklength, track_label="TRACK_ID"):
+	
+	"""
+	Filter trajectories based on the minimum track length.
+
+	Parameters
+	----------
+	trajectories : pandas.DataFrame
+		The input DataFrame containing trajectory data.
+	minimum_tracklength : int
+		The minimum length required for a track to be included.
+	track_label : str, optional
+		The column name in the DataFrame that represents the track ID.
+		Defaults to "TRACK_ID".
+
+	Returns
+	-------
+	pandas.DataFrame
+		The filtered DataFrame with trajectories that meet the minimum track length.
+
+	Notes
+	-----
+	This function removes any tracks from the input DataFrame that have a length
+	(number of data points) less than the specified minimum track length.
+
+	Examples
+	--------
+	>>> filtered_data = filter_by_tracklength(trajectories, 10, track_label="TrackID")
+	>>> print(filtered_data.head())
+
+	"""
+	
+	if minimum_tracklength>0:
+		
+		leftover_tracks = trajectories.groupby(track_label, group_keys=False).size().index[trajectories.groupby(track_label, group_keys=False).size() > minimum_tracklength]
+		trajectories = trajectories.loc[trajectories[track_label].isin(leftover_tracks)]
+	
+	trajectories = trajectories.reset_index(drop=True)
+	
+	return trajectories
+
+
+def load_tracks(csv, minimum_tracklength=0, column_labels={'track': "TRACK_ID", 'time': 'FRAME', 'x': 'POSITION_X', 'y': 'POSITION_Y'}):
 	
 	"""
 	Load and preprocess tracking data from a CSV file.
@@ -179,6 +222,7 @@ def load_tracks(csv, column_labels={'track': "TRACK_ID", 'time': 'FRAME', 'x': '
 
 	# Sort
 	df = df.sort_values(by=[column_labels['track'],column_labels['time']])
+	df = filter_by_tracklength(df, minimum_tracklength, track_label=column_labels['track'])
 
 	return df
 
